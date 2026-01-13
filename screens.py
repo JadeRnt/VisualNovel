@@ -69,9 +69,8 @@ class PhoneAppLayout(FloatLayout):
             padding=10
         )
 
-        # ✅ Fond blanc DANS phone_screen
         with self.phone_screen.canvas.before:
-            Color(1, 1, 1, 1)  # blanc opaque
+            Color(1, 1, 1, 1)
             self.rect_bg = RoundedRectangle(radius=[40,])
 
         self.phone_screen.bind(pos=self.update_rect, size=self.update_rect)
@@ -157,10 +156,16 @@ class ChatScreen(Screen):
         self.back_btn.bind(on_release=self.go_back)
         self.layout.phone_screen.add_widget(self.back_btn)
 
-        self.sounds = {
-            "message_received": SoundLoader.load("assets/message_received.wav"),
-            "message_sent": SoundLoader.load("assets/message_sent.wav"),
-        }
+        self.sounds = {}
+        for name, filename in [("message_received", "message_received.wav"), 
+                            ("message_sent", "message_sent.wav")]:
+            path = f"assets/{filename}"
+            sound = SoundLoader.load(path)
+            if sound:
+                self.sounds[name] = sound
+                print(f"✅ Son chargé : {path}")
+            else:
+                print(f"❌ Impossible de charger : {path} (Vérifiez le fichier ou le driver audio)")
 
     def on_enter(self):
         self.clear_chat()
